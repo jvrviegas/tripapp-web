@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import { useDispatch, useSelector } from 'react-redux';
-import { Form } from '@unform/web';
 import * as Yup from 'yup';
 
-import Input from '~/components/Input';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
+
+import { withFirebase } from '~/firebaseConfig';
 
 // import { signInRequest } from '~/store/modules/auth/actions';
 
@@ -17,23 +19,41 @@ const schema = Yup.object().shape({
 });
 
 export default function SignIn({ history }) {
-  // const dispatch = useDispatch();
-  // const loading = useSelector((state) => state.auth.loading);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  function handleSubmit() {}
+  const isInvalid = password === '' || email === '';
+
+  function handleSubmit(event) {}
 
   return (
     <>
       <img src={logo} alt="GoBarber" />
 
-      <Form schema={schema} onSubmit={handleSubmit}>
-        <Input name="email" type="email" placeholder="E-mail" />
-        <Input name="password" type="password" placeholder="Password" />
+      <form schema={schema} onSubmit={handleSubmit}>
+        <input
+          name="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="E-mail"
+        />
 
-        <button type="button" onClick={() => history.push('/dashboard')}>
+        <input
+          name="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+
+        <button type="submit" disabled={isInvalid}>
           Entrar
         </button>
-      </Form>
+
+        {error && <p>{error.message}</p>}
+      </form>
     </>
   );
 }
